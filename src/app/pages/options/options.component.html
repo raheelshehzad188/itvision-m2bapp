@@ -1,0 +1,22 @@
+<app-header previousLink="/auth" previousAction="Back"></app-header>
+<div class="container">
+
+    <form class="form-signin">
+        <a class="brand text-center">
+            <img src="../../../assets/img/Logo-splash.png" alt="" />
+            <h2 class="form-signin-heading text"><i>Connecting Manufacturer to business</i></h2>
+        </a>
+
+        <h2 class="form-signin-heading text">I am a:</h2>
+        <div class="borderbtn">
+            <button class="btn btn-lg btn-outline-light btn-block " [routerLink]="['../register']" [queryParams]="{option:'Business'}">Business</button>
+        </div>
+        <div class="borderbtn">
+            <button class="btn btn-lg btn-outline-light btn-block " [routerLink]="['../register']" [queryParams]="{option:'Courier'}">Courier</button>
+        </div>
+        <div class="borderbtn">
+            <button class="btn btn-lg btn-outline-light btn-block " [routerLink]="['../register']" [queryParams]="{option:'Supplier'}">Supplier</button>
+        </div>
+      
+    </form>
+</div>

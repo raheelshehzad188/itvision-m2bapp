@@ -1,0 +1,53 @@
+<footer *ngIf="currentActiveUser == 'Other'">
+
+    <button class="btn btn-primary btn-lg" [routerLink]="['/home/products']"><i class="fa fa-home"
+      aria-hidden="true"></i></button>
+    <button class="btn btn-primary btn-lg" [routerLink]="['/mym2bBasic']"><i class="fa fa-bar-chart"
+      aria-hidden="true"></i></button>
+
+
+</footer>
+
+<footer *ngIf="!currentActiveUser">
+
+    <button class="btn btn-primary btn-lg" [routerLink]="['/home/products']"><i class="fa fa-home"
+      aria-hidden="true"></i></button>
+    <button class="btn btn-primary btn-lg" [routerLink]="['/mym2bBasic']"><i class="fa fa-bar-chart"
+      aria-hidden="true"></i></button>
+
+
+</footer>
+
+<footer *ngIf="currentActiveUser == 'Business'">
+
+    <button class="btn btn-primary btn-lg" [routerLink]="['/home/products']"><i class="fa fa-home"
+      aria-hidden="true"></i></button>
+    <button class="btn btn-primary btn-lg" [routerLink]="['/mym2bBasic']"><i class="fa fa-bar-chart"
+      aria-hidden="true"></i></button>
+    <button class="btn btn-primary btn-lg" [routerLink]="['/myOrderList']"><i class="fa fa-truck"></i></button>
+    <button class="btn btn-primary btn-lg" [routerLink]="['/chat']" *ngIf="isOrderAdded"><i
+      class="fa fa-envelope-square"></i></button>
+
+
+</footer>
+
+<footer *ngIf="currentActiveUser == 'Supplier'">
+
+    <button class="btn btn-primary btn-lg" [routerLink]="['/supplierCashout']"><i class="fa fa-dashboard"
+      aria-hidden="true"></i></button>
+
+
+</footer>
+
+<footer *ngIf="currentActiveUser == 'Courier'">
+
+    <button class="btn btn-primary btn-lg" [routerLink]="['/courier-map']"><i class="fa fa-map"
+      aria-hidden="true"></i></button>
+    <button class="btn btn-primary btn-lg" [routerLink]="['/courier-order-list']"><i class="fa fa-list"
+      aria-hidden="true"></i></button>
+    <button class="btn btn-primary btn-lg" [routerLink]="['/courier-cashout']"><i class="fa fa-money"
+      aria-hidden="true"></i></button>
+
+
+
+</footer>

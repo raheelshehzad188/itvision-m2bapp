@@ -1,0 +1,67 @@
+<header class="app-header navbar bg-dark navbar-fixed-top text-light">
+
+    <!--brand start-->
+    <div class="navbar-brand bg-dark">
+        <a class="" [routerLink]="['/auth']">
+            <img src="../../../../assets/img/logo.png" alt="">
+        </a>
+    </div>
+    <!--brand end-->
+
+
+    <!--left side nav toggle start-->
+    <ul class="nav navbar-nav mr-auto">
+
+        <li class="nav-item d-lg-none" *ngIf="previousLink != undefined">
+            <button class="fontbtn navbar-toggler mobile-leftside-toggler" (click)="logout()" [routerLink]="[previousLink]" type="button">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        {{previousAction?previousAction:""}}
+      </button>
+
+        </li>
+
+        <div class="nav-item ">
+            <button class="navbar-toggler left-sidebar-toggler" type="button" (click)="toggleMenu()"><i
+          class="ti-align-right"></i></button>
+        </div>
+        <li class="nav-item d-md-down-none" *ngIf="previousLink != undefined">
+            <a class="nav-link " (click)="logout()">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i> {{previousAction?previousAction:""}}
+            </a>
+        </li>
+
+    </ul>
+    <!--left side nav toggle end-->
+
+    <!--right side nav toggle end-->
+
+    <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item" *ngIf="adminShow">
+            <div *ngIf="previousLink != undefined">
+                <a class="nav-link mr-3" role="button" [routerLink]="['/admin']" aria-haspopup="true" aria-expanded="false">
+          Dashboard
+        </a>
+            </div>
+            <div *ngIf="previousLink == undefined">
+                <a class="nav-link mr-3" role="button" [routerLink]="['/home']" aria-haspopup="true" aria-expanded="false">
+          Home
+        </a>
+            </div>
+        </li>
+        <li *ngIf="currentLink != undefined && show">
+            <a class="nav-link mr-3" role="button" aria-haspopup="true" aria-expanded="false" (click)="cart()">
+
+
+        {{currentAction?currentAction:""}}
+      </a>
+        </li>
+
+        <li class="nav-item" *ngIf="currentLink != undefined && !show">
+            <a class="nav-link mr-3" role="button" [routerLink]="[currentLink]" aria-haspopup="true" aria-expanded="false">
+
+        {{currentAction?currentAction:""}}
+      </a>
+        </li>
+    </ul>
+
+</header>

@@ -1,0 +1,29 @@
+.container {
+    padding-top: 60px;
+}
+
+.borderbtn {
+    padding: 1px;
+    border: 3px solid #fff;
+    border-radius: 11px;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.text {
+    color: white;
+}
+
+.darkBtn {
+    font-weight: bold;
+}
+
+.btn {
+    border: none !important;
+}

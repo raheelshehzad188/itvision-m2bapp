@@ -1,0 +1,66 @@
+<app-header previousLink="/auth/options" previousAction="Options"></app-header>
+<div class="container">
+    <form class="form-signin" [formGroup]="registerForm">
+        <a class="brand text-center">
+            <img src="../../../assets/img/Logo-splash.png" alt="" />
+            <h2 class="form-signin-heading text"><i>Connecting Manufacturer to business</i></h2>
+        </a>
+        <h2 class="form-signin-heading text">Please sign up</h2>
+        <div class="form-group text">
+            <label for="inputName ">{{option+" "+"Name"}}</label>
+            <input type="text" id="inputName" class="form-control" formControlName="name" placeholder="example store inc">
+        </div>
+        <div class="form-group text">
+            <label for="phoneno">Phone Number</label>
+            <input type="number" id="phoneno" class="form-control" formControlName="phoneNo" placeholder="(917)-123-4567">
+        </div>
+
+        <div class="form-group text">
+            <label for="inputEmail">Email address</label>
+
+            <input type="email" id="inputEmail" formControlName="email" class="form-control" placeholder="Example@exmaple.com" required>
+        </div>
+
+        <div class="form-group text">
+            <label for="inputPassword">Password</label>
+
+            <input type="password" id="inputPassword" class="form-control" formControlName="password" placeholder="*******" required>
+        </div>
+
+        <div class="form-group text">
+            <label for="inputConfirmPassword">Confirm Password</label>
+            <input type="password" id="inputConfirmPassword" class="form-control" formControlName="cnfrmPwd" placeholder="*******">
+        </div>
+        <div class="form-group text" *ngIf="option === 'Supplier' || option === 'Business'">
+            <label for="Address">Address</label>
+            <textarea type="text" id="Address" class="form-control" formControlName="address" placeholder="Address"></textarea>
+        </div>
+        <div class="checkbox mb-4 mt-4">
+            <label class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input">
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description text">
+          I Agree the
+          <a href="#" class="text-dark darkBtn">terms and conditions.</a>
+        </span>
+      </label>
+        </div>
+
+        <div class="borderbtn">
+            <button class="btn btn-lg btn-outline-light btn-block" (click)="tryRegister(registerForm.value)" *ngIf="show">Sign
+        up</button>
+        </div>
+
+        <button class="btn btn-lg btn-outline-light btn-block" (click)=courierFooter() *ngIf="!show">Next</button>
+
+        <label class="error">{{errorMessage}}</label>
+        <label class="success">{{successMessage}}</label>
+
+        <div class="mt-4 text">
+            <span>
+        Already have an account ?
+      </span>
+            <a [routerLink]="['/auth/login']" class="text-dark darkBtn">Sign In</a>
+        </div>
+    </form>
+</div>

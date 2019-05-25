@@ -1,0 +1,129 @@
+<app-header previousAction="M2B" previousLink="/mym2bBasic"></app-header>
+<!-- myOrderList -->
+<section>
+    <div class="container ">
+        <div class="row">
+
+            <div class="col-md-8 offset-md-2" style="margin-top: 20% !important; margin-bottom: 25% !important;">
+                <div class="bd-example">
+                    <div id="accordion">
+                        <div class="col-12 text-center">
+                            <h3><a>My Orders</a> </h3>
+                        </div>
+                        <H3 *ngIf="error">No found</H3>
+                        <div class="card" *ngFor="let order of myOrdersInfo; let i = index;">
+                            <div class="card-header" role="tab" id="headingOne" (click)="(clicked === order)? clicked = '':clicked = order">
+                                <div class="mb-0">
+                                    <h3 class="mr-1" style="padding-top: 0.5rem; margin-bottom: 1rem;">Order No {{i+1}}</h3>
+                                    <p class="status" [ngStyle]="{'color': order.status === 'Shipped' ? 'green' : 'red' }">
+                                        {{order.status}}</p><br>
+                                    <p class="date-order">{{order.addOn | date: 'dd/MM/yyyy'}}</p>
+                                    <i class="fa fa-angle-right icon-s" [class.animat]="clicked === order"></i>
+
+                                </div>
+                            </div>
+
+                            <div id="collapseOne" class="collapse " [class.show]="clicked === order" role="tabpanel" aria-labelledby="headingOne" aria-expanded="false">
+
+                                <div>
+
+                                    <select class="btn btn-outline-secondary btn-sm dropdown-toggle form-control addBtn btn-top" style="width:  6.5rem; height: 2rem;" (change)="onContact($event.target.value)">
+                    <option value="0">
+                      Contact Seller
+                    </option>
+                    <option *ngFor="let subOrder of order.supplierOrderInfo ; let i = index;"
+                      [value]="subOrder.supplierOrderId">
+                      Seller {{i+1}}
+                    </option>
+                  </select>
+                                </div>
+
+                                <div *ngIf="order.isWeTrack">
+                                    <i class="fa fa-star star"></i>
+                                </div>
+                                <div class="card-block" *ngFor="let item of order.productDetail">
+                                    <h5 style=" margin-bottom: 2rem;">{{item.productName}}
+
+                                    </h5>
+
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">SKU Name</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">{{item.col1Title}}</th>
+                                                <th scope="col">{{item.col2Title}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let product of item.productSKU; let i = index;">
+                                                <td scope="col">{{product.SKU_Name}}</td>
+                                                <td scope="col">$ {{product.SKU_Price}}</td>
+                                                <td scope="col">{{product.quantity}}</td>
+                                                <td scope="col">{{product.col1Value}}</td>
+                                                <td scope="col">{{product.col2Value}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <hr />
+
+
+                                    <div *ngFor="let track of order.trackingNoList">
+                                        <div class="row mb-1">
+                                            <div class="col-12 text-center bld">
+                                                <strong>Delivery Detail</strong>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-6 text-right ">
+                                                <strong>Tracking Number:</strong>
+                                            </div>
+                                            <div class="col-6 text-left" (click)="setUrl(track.trackingNo , track.courierInfo )" style="color:dodgerblue; cursor: pointer">
+                                                {{track.trackingNo}}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-right ">
+                                                <strong>Courier : </strong>
+                                            </div>
+                                            <div class="col-6 text-left fs-s">
+                                                {{urls[track.courierInfo-1]?.name}}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-6 text-right ">
+                                                <strong>Time Est :</strong>
+                                            </div>
+                                            <div class="col-6 text-left fs-s">
+                                                {{track.timeEst}}
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-6 text-right ">
+                                                <strong>Deliver Address:</strong>
+                                            </div>
+                                            <div class="col-6 text-left">
+                                                {{order.deliverAddress}}
+                                            </div>
+                                        </div>
+
+                                        <hr />
+                                    </div>
+
+                                    <h6 style="color: #232323;">Total Price: $ {{order.totalPrice}}
+                                        <a class="btn btn-outline-secondary addBtn" [routerLink]="['returnRequest']" [queryParams]="{ userId: order.id }">
+                      Open Return Request</a>
+                                    </h6>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- .// Accordion -->
+        <app-footer></app-footer>

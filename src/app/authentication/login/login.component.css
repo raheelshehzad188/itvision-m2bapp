@@ -1,0 +1,25 @@
+.container{
+    padding-top:  60px;
+}
+.default {
+    border-color: #e7e7e7;
+    color: black;
+}
+.borderbtn{
+    padding:1px;
+    border:3px solid #fff;
+    border-radius: 11px;
+}
+.error{
+color: rgba(232,000,000,65);
+}
+.text {
+    color: white;
+}
+.darkBtn{
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn{
+    border: none !important;
+}

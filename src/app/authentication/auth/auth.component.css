@@ -1,0 +1,12 @@
+.borderbtn{
+    padding:1px;
+    border:3px solid #fff;
+    border-radius: 11px;
+    margin-bottom: 1rem;
+}
+.form-signin-heading{
+    color: white;
+}
+.btn{
+    border: none !important;
+}

@@ -1,0 +1,61 @@
+<app-header *ngIf="isOrder" currentAction="Cart" currentLink="/basic-cart/final-cart?productId=review" previousAction="Log Out" previousLink="/home/products"></app-header>
+<app-header *ngIf="!isOrder" previousAction="Log Out" previousLink="/home/products"></app-header>
+<div class="container" style="margin-bottom: 25% !important;">
+
+    <!--state widget start-->
+    <div class="row mt-2">
+        <div class="col-xl-4 col-sm-4 col-xs-4 mb-2 smallscreen">
+            <div class="card bg-primary border-0 text-light">
+                <div class="card-body card-padding-ashlar">
+                    <div class="row">
+                        <div class=" col-12">
+                            <p class="f10 mb-0">Saved</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-4 col-xs-4 mb-2 smallscreen">
+            <div class="card bg-info border-0 text-light ">
+                <div class="card-body card-padding-ashlar">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="f10 mb-0">$ {{credit | number : '1.2-2'}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-4 col-xs-4 mb-2 smallscreen">
+            <div class="card bg-warning border-0 text-light">
+                <div class="card-body card-padding-ashlar">
+                    <div class="row">
+                        <div class=" col-12">
+                            <p class="f10 mb-0">Status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="scrollable">
+        <ul class="row nav nav nav-pills nav-fill nav-pills-inverse mb-4 " id="menu" role="tablist" style="text-align: center">
+            <li class="col-3 mblescreen nav-item" *ngFor="let category of categories;let i = index;">
+                <a class="nav-link " data-toggle="tab" [ngClass]="{'active': selectedItemId === i }" (click)="selectedItemId = i" routerLink="./products" [queryParams]="{ categoryId: category.key }">
+                    <i class="fa fa-mobile icon"></i><span>{{category.catName}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
+
+    <div class="row bgColor">
+        <p class="col-12">Our Sellers provide good quality parts, 30% less price on each LCD than your current. Returns Accepted.</p>
+    </div>
+    <router-outlet></router-outlet>
+
+</div>
+<app-footer></app-footer>
