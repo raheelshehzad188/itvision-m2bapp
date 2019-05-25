@@ -3,9 +3,11 @@
     z-index: 1;
 }
 
+/*
 .scrollable {
     overflow: scroll;
 }
+*/
 
 @media screen and (max-width: 552px) {
     .smallscreen {
