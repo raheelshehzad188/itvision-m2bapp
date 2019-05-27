@@ -1531,8 +1531,8 @@ header styles
 }
 
 .app-header .navbar-nav .dropdown-menu {
-    min-width: 300px;
-    margin: 1.5rem 0 0;
+    min-width: 200px;
+    margin: 0.5rem 0 0;
 
     border: none;
     box-shadow: 0 10px 70px 0 rgba(108, 158, 195, .25);

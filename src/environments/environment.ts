@@ -14,7 +14,7 @@ export const environment = {
   functionsURL: 'https://us-central1-m2bwholesale-219d4.cloudfunctions.net',
   paypalSandboxKey: 'AQT6Lob6ZwNMSCkI8dE6ZjiC6IyKW77SdjkxZ8YWR4tN3pjbn-SfvTDDxkquTG7mRDNDlABPQZCFEUK9',
   paypalProductionKey:'AYUF1sisd8CX6n9wDzO13KAL2wpq9FXZcbcnoZc49cvy2GIW7-zEtlOSKMCZg0B9kRzWMYdOBKHN17Ht',
-  appUrl: 'http://acedevserver.com/m2b'
+  appUrl: 'https://m2bapp.herokuapp.com'
 
 
 

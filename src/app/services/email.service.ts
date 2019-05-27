@@ -28,7 +28,7 @@ export class EmailService {
       <div>
       <div style="width:510px;margin:20px auto;padding:20px;background-color:#ff8e32; border-radius: 9px;">
           <div style="padding:30px 30px 0px 30px;width:450px;background-color:#fff;">
-              <div style="margin-bottom:35px;">http://m2bwholesale.herokuapp.com/assets/img/IMG_6766.JPG
+              <div style="margin-bottom:35px;">http://m2bapp.herokuapp.com/assets/img/IMG_6766.JPG
               <img src=""
                         alt="M2B Logo Not Found" style=" width: 40%; margin-left: 30%; ">
                         </div>
@@ -53,7 +53,7 @@ export class EmailService {
       <div style="width:510px;margin:20px auto;padding:20px;background-color:#ff8e32; border-radius: 9px;">
           <div style="padding:30px 30px 0px 30px;width:450px;background-color:#fff;">
               <div style="margin-bottom:35px;">
-              <img src="http://m2bwholesale.herokuapp.com/assets/img/IMG_6766.JPG"
+              <img src="http://m2bapp.herokuapp.com/assets/img/IMG_6766.JPG"
                         alt="M2B Logo Not Found" style=" width: 40%; margin-left: 30%; ">
                         </div>
               <div style="font-size:14px;color:#505050;font-weight:500;">${info.title}</div>
