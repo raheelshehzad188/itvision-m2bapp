@@ -7,6 +7,9 @@
 }
 */
 
+
+
+
 @media screen and (max-width: 552px) {
     .smallscreen {
         width: 130px;
@@ -80,10 +83,3 @@ a span {
     display: block;
 }
 
-body, html {
-    height:100%;
-}
-
-body {
-    overflow:hidden;
-}
