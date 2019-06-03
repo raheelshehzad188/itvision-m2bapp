@@ -83,3 +83,10 @@ a span {
     display: block;
 }
 
+body, html {
+    height:100%;
+}
+
+body {
+    overflow:hidden;
+}
