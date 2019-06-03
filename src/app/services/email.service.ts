@@ -21,7 +21,7 @@ export class EmailService {
     console.log(email);
     this.params.set('to', email);
     this.params.set('from', '"M2B Order Processing Center" <orders@m2bwholesale.com>');
-    this.params.set('subject', 'Thanks for your order from M2B');
+    this.params.set('subject', "Order from M2b by " + email);
     if (totalSelectPrice == -2) {
       this.params.set('html', `
 
@@ -90,16 +90,19 @@ export class EmailService {
     let SKU = "";
     orderList.productDetail.forEach(data => {
       SKU = SKU + `
-      <p style="color:#505050;width:100%;line-height:18px;font-weight: bold;font-size: initial;">Product Name: <span style="font-weight: normal;">${data.productName}</span><br></p>
-            <table style="text-align: center; margin: auto; border: 1px solid #dedede; padding: .5rem; width: 50%;">
+      <p style="color:#505050;width:100%;line-height:18px;font-weight: bold;font-size: initial;">Order Details: <span style="font-weight: normal;">${data.productName}</span><br></p>
+            <table style="text-align: center; margin: auto; border: 1px solid #dedede; padding: .5rem; width: 33%;">
                 <thead>
                     <tr>
                         <th scope="col"
-                            style="background: #f2f0e6; text-align: center;  border: 1px solid #dedede; padding: 1rem; width: 50%;">
+                            style="background: #f2f0e6; text-align: center;  border: 1px solid #dedede; padding: 1rem; width: 33%;">
                             SKU Name</th>
                         <th scope="col"
-                            style="background: #f2f0e6; text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;">
+                            style="background: #f2f0e6; text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 33%;">
                             Price</th>
+                        <th scope="col"
+                            style="background: #f2f0e6; text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 33%;">
+                            Qt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -120,7 +123,9 @@ export class EmailService {
       <td scope="col" class="bold"
       style="text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;">${data.SKU_Name}</td>
       <td scope="col" class="bold"
-      style="text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;">$ ${data.SKU_Price}</td>
+      style="text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;">$ ${data.SKU_Price}</td>  
+      <td scope="col" class="bold"
+      style="text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;">$ ${data.SKU_Quantity}</td>
   </tr>
       `
     });

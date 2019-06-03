@@ -267,14 +267,14 @@ export class FinalCartComponent implements OnInit, OnDestroy {
       }
       this.productobj.id = this.makeid();
       if (this.myTotalCredit == 0 || this.myTotalCredit < 0 || this.myTotalCredit < this.totalSelectPrice) {
-        this.toastrService.error("Less credit in M2B Account");
+        this.toastrService.error("Not enough credit in M2B Account");
         this.supplierSer.needCredit = this.totalSelectPrice - this.myTotalCredit;
 
         this.router.navigateByUrl('mym2bCredit?productId=' + this.id);
       } else {
 
         // Setting Email Data and send
-        this.supplierTag.data = "Your Order Placed Successfully! Order Detail are:";
+        this.supplierTag.data = "Your Order Placed Successfully! Order is shipping to " + this.deliveryAddress ;
         this.supplierTag.title = "Thank You!";
         this.supplierTag.link = ` <p style="background-color: #ff8e32;border: 2px solid #ffffff;color:#ffffff;border-radius: .5rem;font-size: 14px;font-weight: 600;line-height:1;padding: 20px 13px;text-align:center;margin-left: 21%;margin-right: 20%;cursor: pointer;"><a href="${this.appUrl}/#/myOrderList" >Check Order Detail</a></p> `
         container.productDetail = this.orderList;

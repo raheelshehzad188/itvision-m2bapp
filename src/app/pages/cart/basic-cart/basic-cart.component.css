@@ -82,3 +82,11 @@ input[type="text"].title-text {
 .addBtn {
     margin-left: 1rem;
 }
+
+body, html {
+    height:100%;
+}
+
+body {
+    overflow:hidden;
+}
