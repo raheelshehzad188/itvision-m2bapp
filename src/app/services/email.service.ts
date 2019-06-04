@@ -40,7 +40,7 @@ export class EmailService {
               
   
               <div style="border-top:1px solid #d8d8d8;padding-top:15px;padding-bottom:20px;">
-                  <p style="font-size:12px;color:#505050;margin:0;">@ M2B Shop</p>
+                  <p style="font-size:12px;color:#505050;margin:0;">@ M2BWholesale 2019</p>
               </div>
           </div>
       </div>

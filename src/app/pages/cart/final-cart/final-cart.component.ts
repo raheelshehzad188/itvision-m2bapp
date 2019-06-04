@@ -155,7 +155,7 @@ export class FinalCartComponent implements OnInit, OnDestroy {
       this.supplierProductobj.userOrderID = this.makeid();
       this.supplierDetail.supplierOrderId = this.supplierProductobj.userOrderID;
 
-
+      // Setting Email Data for admin and send
       console.log(this.supplierDetail);
       this.arr.push(this.supplierDetail);
       this.supplierOrderListService.createOrderList(this.supplierProductobj);
