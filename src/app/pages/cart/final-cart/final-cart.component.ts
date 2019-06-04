@@ -159,8 +159,16 @@ export class FinalCartComponent implements OnInit, OnDestroy {
       console.log(this.supplierDetail);
       this.arr.push(this.supplierDetail);
       this.supplierOrderListService.createOrderList(this.supplierProductobj);
-      this.supplierTag.title = "";
-      this.supplierTag.data = `<span style="font-weight: bold;">User Name:</span>  ${this.user.name} `;
+      this.supplierTag.title = "New Order Just Placed !";
+      this.supplierTag.data = `<span style="font-weight: bold;">User Name:</span>  ${this.user.name} <p>
+      Delivery Address :<br/>
+        ${this.deliveryAddress} <br/>
+        ${this.user.phoneNo }<br/>
+        Delivery Time :<br/>
+        3 Business  Day<br/>
+      </p>`;
+
+
       this.supplierTag.link = ` <p style="background-color: #ff8e32;border: 2px solid #ffffff;color:#ffffff;border-radius: .5rem;font-size: 14px;font-weight: 600;line-height:1;padding: 20px 13px;text-align:center;margin-left: 21%;margin-right: 20%;cursor: pointer;"><a href="${this.appUrl}/#/admin/order-list" >Check Order Detail</a></p> `
       container.productDetail = this.orderList;
       this.sendEmailService.sendEmail(email, this.supplierTag, this.totalSelectPrice, container);
@@ -274,7 +282,13 @@ export class FinalCartComponent implements OnInit, OnDestroy {
       } else {
 
         // Setting Email Data and send
-        this.supplierTag.data = "Your Order Placed Successfully! Order is shipping to  " + this.deliveryAddress ;
+        this.supplierTag.data = ` Your Order Placed Successfully! Order is shipping to  <p>
+        Delivery Address :<br/>
+          ${this.deliveryAddress} <br/>
+          ${this.user.phoneNo }<br/>
+          Delivery Time :<br/>
+          3 Business  Day<br/>
+        </p>` ;
         this.supplierTag.title = "Thank You!";
         this.supplierTag.link = ` <p style="background-color: #ff8e32;border: 2px solid #ffffff;color:#ffffff;border-radius: .5rem;font-size: 14px;font-weight: 600;line-height:1;padding: 20px 13px;text-align:center;margin-left: 21%;margin-right: 20%;cursor: pointer;"><a href="${this.appUrl}/#/myOrderList" >Check Order Detail</a></p> `
         container.productDetail = this.orderList;

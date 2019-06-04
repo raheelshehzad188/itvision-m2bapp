@@ -125,7 +125,7 @@ export class EmailService {
       <td scope="col" class="bold"
       style="text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;">$ ${data.SKU_Price}</td>  
       <td scope="col" class="bold"
-      style="text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;">$ ${data.quantity}</td>
+      style="text-align: center; margin: auto; border: 1px solid #dedede; padding: 1rem; width: 50%;"> ${data.quantity}</td>
   </tr>
       `
     });
