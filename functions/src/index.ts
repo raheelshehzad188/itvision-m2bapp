@@ -38,7 +38,7 @@ const mailTransport = nodemailer.createTransport({
  secure:false,
  auth: {
 user: "orders@m2bwholesale.com",
-pass: "Chicha12"
+pass: "Chicha19@@"
  },
  authMethod: 'NTLM',
  tls: {
