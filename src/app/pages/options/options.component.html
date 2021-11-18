@@ -1,13 +1,15 @@
-<app-header previousLink="/auth" previousAction="Back"></app-header>
+
 <div class="container">
 
-    <form class="form-signin">
-        <a class="brand text-center">
+    <div class="options_form">
+        <form class="form-signin middlebox">
+        <div class="login_logo">
             <img src="../../../assets/img/Logo-splash.png" alt="" />
-            <h2 class="form-signin-heading text"><i>Connecting Manufacturer to business</i></h2>
-        </a>
+            <h4>Connecting Manufacturer to business</h4>
+        </div>
 
-        <h2 class="form-signin-heading text">I am a:</h2>
+        <div class="sign_in">
+            <h5>I am a:</h5>
         <div class="borderbtn">
             <button class="btn btn-lg btn-outline-light btn-block " [routerLink]="['../register']" [queryParams]="{option:'Business'}">Business</button>
         </div>
@@ -17,6 +19,9 @@
         <div class="borderbtn">
             <button class="btn btn-lg btn-outline-light btn-block " [routerLink]="['../register']" [queryParams]="{option:'Supplier'}">Supplier</button>
         </div>
+        </div>
+        
       
     </form>
+    </div>
 </div>

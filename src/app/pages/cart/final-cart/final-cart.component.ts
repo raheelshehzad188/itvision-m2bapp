@@ -14,6 +14,7 @@ import { environment } from '../../../../environments/environment';
 import { Http, URLSearchParams } from '@angular/http';
 import { EmailService } from '../../../services/email.service';
 import { Subscription } from 'rxjs';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from 'angularfire2/database';
 @Component({
   selector: 'app-final-cart',
   templateUrl: './final-cart.component.html',
@@ -35,31 +36,36 @@ export class FinalCartComponent implements OnInit, OnDestroy {
   supplierProductobj = new SupplierOrderListModel();
 
   supplierProdstruct = { productName: "", productPrice: 0, quantity: 0, supplierId: "", addOn: 0 };
-  arr = [];
-  user: any;
-  credit: number;
-  myTotalCredit = 0;
-  selectedData: {};
-  id: string;
-  order_id: string;
-  msgStruct = [{
-    message: 'Welcome to M2B',
-    timeSent: '',
-    userName: '',
-    senderId: '',
-    senderEmail: ''
-  }];
-  isErr = false;
-  emailUrl = environment.functionsURL + "/mailService";
-  params: URLSearchParams = new URLSearchParams();
-  supplierEmail: string;
-  product: any;
-  orderList: any;
-  totalSKUPrice = 0;
-  getProduct: any;
-  productSub: Subscription;
-  supplierTag = { title: "", data: "", link: "" };
-  checkEmpty = false;
+  address = {
+    'fname' :"",
+    'lname' :"",
+    'email' :"",
+    'phone' :"",
+    'address' :"",
+    'town' :"",
+    'state' :"",
+    'postcode' :"",
+    'country' :"United States",
+
+  };
+  saddress = {
+    'fname' :"",
+    'lname' :"",
+    'email' :"",
+    'phone' :"",
+    'address' :"",
+    'town' :"",
+    'state' :"",
+    'postcode' :"",
+    'country' :"United States",
+
+  };
+  cart : any;
+  userId : any;
+  sameship : any;
+  save_next : any;
+  shipping_methods : any;
+  smethod : any;
   constructor(
     private actRoute: ActivatedRoute,
     private toastrService: ToastrService,
@@ -69,36 +75,148 @@ export class FinalCartComponent implements OnInit, OnDestroy {
     private http: Http,
     private sendEmailService: EmailService,
     private supplierOrderListService: SupplierOrderListService,
-    private supplierSer: SupplierService
+    private supplierSer: SupplierService,
+    private db: AngularFireDatabase
   ) {
-    this.id = this.actRoute.snapshot.queryParamMap.get('productId');
-    this.ownEmail = JSON.parse(localStorage.getItem("user")).email;
+    this.sameship = true;
+    this.samount = 0;
+    this.save_next = false;
+    this.userId = localStorage.getItem('login');
+    let list = this.db.list('/cart');
+    list.snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+      )
+    ).subscribe(cart => {
+      this.cart = cart;
+      this.calculateTotal();
+
+    });
+    list = this.db.list('/shipping_methods');
+
+    list.snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+      )
+    ).subscribe(shipping_methods => {
+      this.shipping_methods = shipping_methods;
+    });
+    this.getUserByOption();
 
   }
+  checkout()
+  {
+    let today = new Date();
+let dd = String(today.getDate()).padStart(2, '0');
+let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+let yyyy = today.getFullYear();
 
+today = dd + '/' + mm + '/' + yyyy;
+
+    let lcart = [];
+    this.cart.forEach((currentValue, index) => {
+        if(currentValue.uid == this.userId)
+        {
+          lcart.push(currentValue);
+        }
+        });
+     if(this.sameship)
+     {
+      this.saddress = this.address;
+     }
+     if(this.save_next)
+     {
+      let us = Object.keys(this.user).map(key => ({type: key, value: this.user[key]}));
+      us['future'] = {
+        'address':this.address,
+        'saddress':this.saddress,
+        'save_next':this.save_next,
+        'sameship':this.sameship,
+      };
+
+      console.log(us);
+
+
+           let r = this.db.list('/users').update(this.userId, us);
+     }
+
+    let order = {
+      'date':today,
+      'uid':this.userId,
+      'tot':this.tot,
+      'cart':lcart,
+      'address':this.address,
+      'saddress':this.saddress,
+      'status':'Pending',
+    };
+    if(this.smethod)
+    {
+    order['shipping'] = this.shipping_methods[this.smethod];
+  }
+
+
+    console.log(order);
+    let r = this.db.list('/orderLists').push(order);
+    if(r)
+    {
+      this.cart.forEach((currentValue, index) => {
+        if(currentValue.uid == this.userId)
+        {
+          let tutorialsRef = this.db.list('cart');
+    let r = tutorialsRef.remove(currentValue.key);
+          lcart.push(currentValue);
+        }
+        });
+      alert('order create successfully!');
+
+    }
+    }
+  stot : any;
+  tot : any;
+  calculateTotal()
+  {
+    this.tot = 0;
+    this.stot = 0;
+    this.cart.forEach((currentValue, index) => {
+        if(currentValue.uid == this.userId)
+        {
+          console.log(currentValue.sku.SKU_Price+"x"+currentValue.qty);
+          console.log((currentValue.sku.SKU_Price * currentValue.qty));
+          this.tot = this.tot + (currentValue.sku.SKU_Price * currentValue.qty);
+          console.log("I m here"+this.tot);
+          this.stot = this.tot;
+          this.tot = Number(this.tot) +Number(this.samount);
+        }
+        });
+  }
+  updateqty(i,type)
+  {
+    if(type == 'm')
+    {
+      this.cart[i].qty= this.cart[i].qty -1;
+
+    }
+    else{
+      this.cart[i].qty= this.cart[i].qty +1;
+    }
+    this.calculateTotal();
+  }
   ngOnInit() {
-    this.getCurrentUserInfo();
+    // this.getCurrentUserInfo();
     this.orderList = JSON.parse(localStorage.getItem('orderData'));
-    console.log(this.orderList.length - 1);
-
-    this.order_id = this.orderList.length <= 0 ? "" : this.orderList[this.orderList.length - 1].order_id;
-
+    this.calculateTotal();
+  }
+  samount :any;
+  shipping()
+  {
+    this.samount = this.shipping_methods[this.smethod].price;
+    // alert(this.samount);
     this.calculateTotal();
   }
   ngOnDestroy() {
   }
-  calculateTotal() {
-    this.totalSelectPrice = 0;
-    this.orderList.forEach(el => {
-      el.productSKU.forEach(item => {
-        this.totalSKUPrice = item.SKU_Price * +item.quantity;
-        this.totalSelectPrice = Math.round((this.totalSelectPrice + this.totalSKUPrice) * 100) / 100;
-      });
 
-    });
-  }
-
-  createOrderForSuplliers() {
+  /*createOrderForSuplliers() {
     let sameProd = [];
     let uniqueEmailValues: string[];
     let unique = {};
@@ -179,154 +297,34 @@ export class FinalCartComponent implements OnInit, OnDestroy {
       this.supplierDetail = new SupplierOrderInfo();
     })
 
-  }
+  }*/
 
 
-  makeid() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < 5; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-  }
-
-  createOrder() {
-    this.orderList.forEach(order => {
-      this.getData(order);
-
-    });
-    this.productobj.productDetail = this.orderList;
-    this.productobj.deliverAddress = this.deliveryAddress;
-    this.productobj.supplierOrderInfo = this.arr;
-    this.productobj.addOn = Date.now();
-    this.productobj.userEmail = this.ownEmail;//
-
-    this.productobj.totalPrice = this.totalSelectPrice;
-    this.orderListService.createOrderList(this.productobj);
-
-  }
-
-  getData(order) {
-
-    this.productSub = this.productService.getProductbycat("id", order.id).snapshotChanges().pipe(
-      map(changes =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-      )
-    ).subscribe(productDetail => {
-      console.log(productDetail);
-      productDetail.forEach(product => {
-        this.getProduct = product;
-      });
-
-      console.log(this.getProduct);
-      order.productSKU.forEach(SKU => {
-        console.log(SKU.SKU_Quantity, SKU.quantity);
-        let quantity = SKU.SKU_Quantity - +SKU.quantity;
-        console.log(quantity);
-        let index = this.getProduct.productSKU.findIndex(x => x.SKU_Name == SKU.SKU_Name);
-        console.log(index);
-        this.getProduct.productSKU[index].SKU_Quantity = quantity;
-
-      });
-      console.log(this.getProduct);
-      this.productService.updateProduct(this.getProduct.key, this.getProduct, this.getProduct.product_image_url);
-      this.productSub.unsubscribe();
-    })
-  }
-
-  removeProduct(index) {
-
-    this.orderList.splice(index, 1);
-    this.calculateTotal();
-    localStorage.setItem('orderData', JSON.stringify(this.orderList));
-
-    if (this.orderList.length <= 0) {
-      this.order_id = "";
-      this.checkEmpty = true;
-    } else {
-      this.order_id = this.orderList[this.orderList.length - 1].order_id;
-      this.checkEmpty = false;
-    }
-
-  }
-
-  removeSKU(i, x) {
-    this.orderList[i].productSKU.splice(x, 1);
-    if (this.orderList[i].productSKU.length < 1) {
-      this.orderList.splice(i, 1);
-
-      this.order_id = this.orderList.length <= 0 ? "" : this.orderList[this.orderList.length - 1].order_id;
-    }
-    this.calculateTotal();
-    localStorage.setItem('orderData', JSON.stringify(this.orderList));
-    this.checkEmpty = this.orderList.length <= 0 ? true : false;
-  }
-  setQuantity() {
-    if (this.deliveryAddress == '') {
-      this.isErr = true;
-      this.toastrService.error("Please enter Delivery Address");
-    } else {
-      this.isErr = false;
-
-      let container = {
-        productDetail: []
-      }
-      this.productobj.id = this.makeid();
-      if (this.myTotalCredit == 0 || this.myTotalCredit < 0 || this.myTotalCredit < this.totalSelectPrice) {
-        this.toastrService.error("Not enough credit in M2B Account");
-        this.supplierSer.needCredit = this.totalSelectPrice - this.myTotalCredit;
-
-        this.router.navigateByUrl('mym2bCredit?productId=' + this.id);
-      } else {
-
-        // Setting Email Data and send
-        this.supplierTag.data = ` Your Order Placed Successfully! Order is shipping to  <p>
-        Delivery Address :<br/>
-          ${this.deliveryAddress} <br/>
-          ${this.user.phoneNo }<br/>
-          Delivery Time :<br/>
-          3 Business  Day<br/>
-        </p>` ;
-        this.supplierTag.title = "Thank You!";
-        this.supplierTag.link = ` <p style="background-color: #ff8e32;border: 2px solid #ffffff;color:#ffffff;border-radius: .5rem;font-size: 14px;font-weight: 600;line-height:1;padding: 20px 13px;text-align:center;margin-left: 21%;margin-right: 20%;cursor: pointer;"><a href="${this.appUrl}/#/myOrderList" >Check Order Detail</a></p> `
-        container.productDetail = this.orderList;
-        this.sendEmailService.sendEmail(this.ownEmail, this.supplierTag, this.totalSelectPrice, container);
-
-        this.credit = this.myTotalCredit - this.totalSelectPrice;
-        this.user.credit = this.credit;
-        this.supplierSer.updateUser(this.user.key, this.user);
-
-
-        this.createOrderForSuplliers();
-
-        this.createOrder();
-
-        this.router.navigateByUrl('basic-cart/final-cart/checkout-cart?productId=' + this.id);
-        this.toastrService.success("Your Order Placed Successfully");
-        this.productobj = new OrderListModel();
-        localStorage.setItem('orderData2', JSON.stringify(this.orderList));
-        localStorage.removeItem('orderData');
-
-      }
-
-    }
-  }
-  getCurrentUserInfo() {
-
-    this.supplierSer.getUsersByOption(this.checkChild, this.ownEmail).snapshotChanges().pipe(
+  
+  credit : any;
+  user : any;
+  getUserByOption() {
+    this.ownEmail = JSON.parse(localStorage.getItem("user"));
+    this.supplierSer.getUsersByOption('email', this.ownEmail.email).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
       )
     ).subscribe(users => {
-      users.forEach(user => {
-        this.user = user;
-        this.deliveryAddress = this.user.address;
-        this.myTotalCredit = Math.round((this.user.credit) * 100) / 100;
+      this.user = users[0];
 
-      })
+      if(users[0]['future'])
+      {
+        this.address = users[0]['future']['address'];
+        this.saddress = users[0]['future']['saddress'];
+        this.save_next = users[0]['future']['save_next'];
+        this.sameship = users[0]['future']['sameship'];
+      }
+      this.address.email = users[0].email;
+      this.address['phone'] = users[0].phoneNo;
+      this.credit = users[0].credit;
+
     });
+
   }
 
 }

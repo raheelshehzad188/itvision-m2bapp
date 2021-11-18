@@ -5,6 +5,7 @@ import { OrderListService } from '../../../services/order-list.service';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../authentication/core/auth.service';
 import { SupplierService } from '../../../services/supplier.service';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from 'angularfire2/database';
 
 @Component({
   selector: 'app-footer',
@@ -18,9 +19,31 @@ export class FooterComponent implements OnInit {
   currentActiveUser: string;
   LocalStorageData: any;
   option: string;
-  constructor(private supplierService: SupplierService, private activeUserService: LoggedInAsService, private orderListService: OrderListService, private authService: AuthService) {
+  tot : any
+  constructor(private supplierService: SupplierService, private activeUserService: LoggedInAsService, private orderListService: OrderListService, private authService: AuthService,private db: AngularFireDatabase) {
     this.LocalStorageData = JSON.parse(localStorage.getItem("user"));
     this.checkUserOption();
+    this.tot = 0;
+    let list = this.db.list('/cart');
+    list.snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+      )
+    ).subscribe(cart => {
+      this.cart = cart;
+      console.log('footer cart');
+      let t = 0;
+      let luid  = localStorage.getItem('login');
+      this.cart.forEach((currentValue, index) => {
+        if(currentValue.uid == luid)
+        {
+          t = t+ (currentValue.sku.SKU_Price * currentValue.qty);
+        }
+        });
+      //sku
+      this.tot = t;
+
+    });
   }
 
   ngOnInit() {

@@ -135,12 +135,13 @@ export class LoginComponent implements OnInit {
 
     this.authService.doLogin(value)
       .then(res => {
-        console.log(value.email);
         this.supplierService.getUsersByOption(this.checkChild, value.email.toLowerCase()).snapshotChanges().pipe(
           map(changes =>
             changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
           )
         ).subscribe(users => {
+          console.log("Login user here");
+          localStorage.setItem("login", users[0].key);
           this.users = users;
           this.activeUserService.setValue(this.users[0].option);
           this.ress = this.GetOption(this.users[0].option);
@@ -190,6 +191,7 @@ export class LoginComponent implements OnInit {
         });
 
       }, err => {
+        alert("error");
         console.log(err);
         this.errorMessage = err.message;
       });

@@ -51,29 +51,10 @@ export class MyOrderListComponent implements OnInit {
         )
       )
       .subscribe(orderList => {
-        this.orderList = orderList;
-        this.myOrdersInfo = [];
-        this.orderList.forEach(product => {
-
-          if (product.userEmail == this.localStorageData.email) {
-
-            this.myOrdersInfo.push(product);
-            this.error = false;
-            this.orderListService.isOrderAdded = true;
-
-          } else if (this.myOrdersInfo.length == 0) {
-            this.error = true;
-          }
-        });
+        this.myOrdersInfo = orderList;
       });
     console.log(this.myOrdersInfo);
-    this.myOrdersInfo.forEach((x) => {
-      x.supplierOrderInfo.forEach((y) => {
-        y.totalProductName.forEach((z, index) => {
-          this.count++;
-        })
-      })
-    })
+    
   }
 
 

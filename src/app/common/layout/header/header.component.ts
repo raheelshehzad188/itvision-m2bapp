@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { AuthService } from '../../../authentication/core/auth.service';
-// import { ProductService } from '../../../services/product.service';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from 'angularfire2/database';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -20,6 +20,8 @@ export class HeaderComponent implements OnInit {
   show = false;
   cartCheck = false;
   adminShow = false;
+  LSRole: string;
+  isOrder = false;
   @Input() menuvisible: boolean = true;
   @Output() menuvisibleChange = new EventEmitter<boolean>();
   message = false;
@@ -27,8 +29,29 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     public authService: AuthService,
-    private location: Location) {
-    this.adminShow = this.authService.AdminCheck;
+    private location: Location,
+    private db: AngularFireDatabase
+    ) {
+    this.tot = 0;
+    let list = this.db.list('/cart');
+    list.snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+      )
+    ).subscribe(cart => {
+      this.cart = cart;
+      console.log('header cart');
+      let t = 0;
+      let luid  = localStorage.getItem('login');
+      this.cart.forEach((currentValue, index) => {
+        if(currentValue.uid == luid)
+        {
+          this.tot = this.tot +1;
+        }
+        });
+
+    });
+    console.log("count="+this.tot);
   }
 
   ngOnInit() {
@@ -45,7 +68,9 @@ export class HeaderComponent implements OnInit {
   }
   logout() {
     console.log(this.previousAction);
-    if (this.previousAction == "Log Out") {
+    localStorage.clear();
+    this.router.navigate(['/auth']);
+     if (this.previousAction == "Log Out") {
       localStorage.clear();
       this.authService.doLogout()
       this.router.navigate(['/auth/login'])
