@@ -35,6 +35,16 @@ export class HomeComponent implements OnInit {
     col1Title: "",
     col2Title: ""
   }
+  getcolor(ci){
+    let c = this.color[this.ccurcolor];
+this.ccurcolor++;
+if(this.ccurcolor == 2)
+{
+  this.ccurcolor = 0; 
+}
+    return c;
+  }
+  ccurcolor: 0;
   checkout()
   {
 
@@ -49,6 +59,9 @@ export class HomeComponent implements OnInit {
   userId: string;
   isOrder = false;
   credit: number;
+  color: {
+    'red','green','blue'
+  }
   removecartitem(ci)
   {
     let tutorialsRef = this.db.list('cart');
@@ -74,13 +87,12 @@ export class HomeComponent implements OnInit {
       let luid  = localStorage.getItem('login');
       this.tot = 0;
       cart.forEach((currentValue, index) => {
-        if(currentValue.uid == luid)
-        {
-          console.log(currentValue.sku.SKU_Price+"x"+currentValue.qty);
-          this.tot = this.tot+ (currentValue.sku.SKU_Price * currentValue.qty);
+        if( currentValue['uid'] && currentValue['uid'] == luid)
+        { 
+          if(currentValue['sku'] && currentValue['qty'])
+          this.tot = this.tot+ (currentValue['sku'].SKU_Price * currentValue['qty']);
         }
         });
-      this.tot = t;
     });
   }
   constructor(
@@ -91,8 +103,9 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private db: AngularFireDatabase
   ) {
-    this.carttot()
+    this.varImg = 0;
     this.userId = localStorage.getItem('login');
+    this.selectedCat = 0;
     let list = this.db.list('/categories');
     list.snapshotChanges().pipe(
       map(changes =>
@@ -149,6 +162,7 @@ export class HomeComponent implements OnInit {
 
     });
     this.LSRole = localStorage.getItem("op");
+    this.carttot();
     this.isOrder = localStorage.getItem("orderData") ? true : false;
   }
   selectattr1(attr, pi,sval){
@@ -156,15 +170,22 @@ export class HomeComponent implements OnInit {
     this.products[pi].attributes.forEach((currentValue, index) => {
       if(currentValue['name'] == attr.name)
       {
+        if(!this.products[pi].attributes[index]['chosen'])
        this.products[pi].attributes[index]['chosen'] = sval;
+     else{
+      delete this.products[pi].attributes[index]['chosen'];
+     }
       }
     });
-    this.products[pi].attr_index = this.products[pi].attr_index +1;
+    let tr  = this.products[pi].attr_index +1;
     let tot= this.products[pi].attributes.length - 1;
-    if(this.products[pi].attr_index > tot)
+    if(tr > tot)
     {
       this.products[pi].attr_index = 0;
-      this.products[pi].attributes = this.oproducts[pi].attributes;
+      // this.products[pi].attributes = this.oproducts[pi].attributes;
+    }
+    else{
+      this.products[pi].attr_index = this.products[pi].attr_index +1;
     }
     console.log("next index"+this.products[pi].attr_index);
     let next = this.products[pi].attributes[this.products[pi].attr_index];
@@ -249,6 +270,48 @@ export class HomeComponent implements OnInit {
     return exist;
 
   }
+  updateqty(index,key,qty)
+  {
+    console.log("cart item");
+    this.cart[index].qty = qty;
+    let str = '';
+  this.cart[index].attributes.forEach((currentValue, index) => {
+      if(currentValue['chosen'])
+      {
+        if(index == 0)
+        {
+          str = str+currentValue['chosen'];
+
+        }
+        else{
+          str = str+' - '+currentValue['chosen'];
+        }
+
+        // mlocal[currentValue['name']] = currentValue['chosen'];
+      }
+    });
+  str = str+':'+qty;
+  this.cart[index]['astr'] = str;
+    console.log(this.cart[index]);
+    let r = this.db.list('/cart').update(key, this.cart[index]);
+
+  }
+  varImg: any;
+  checkcart(val)
+  {
+    let find = 0;
+    let cqty = this.products[val].qty;
+    console.log("checkcart");
+    this.cart.forEach((currentValue, index) => {
+      if(currentValue.sku.SKU_Name == this.products[val].sku.SKU_Name && currentValue.uid == this.userId)      {
+        find = 1;
+        console.log(currentValue);
+        cqty = cqty + currentValue.qty;
+        this.updateqty(index,currentValue.key,cqty)
+      }
+    });
+    return find;
+  }
   checkvariation(pi)
 {
   this.products[pi].sku = null;
@@ -260,23 +323,28 @@ export class HomeComponent implements OnInit {
         mlocal[currentValue['name']] = currentValue['chosen'];
       }
     });
+  console.log(this.products[pi].productSKU);
 
+  if(this.products[pi].productSKU)
+  {
+    this.products[pi].productSKU.forEach((currentValue, index) => {
+        let msku = [];
+        if(currentValue.attributes)
+        {
+           msku = this.skutoattr(currentValue);
+           console.log('start'); 
+           console.log(this.comparaattr(msku, mlocal)); 
 
-  this.products[pi].productSKU.forEach((currentValue, index) => {
-      let msku = [];
-      if(currentValue.attributes)
-      {
-         msku = this.skutoattr(currentValue);
-         console.log('start'); 
-         if(this.comparaattr(msku, mlocal))
-         {
-          this.products[pi].price = currentValue.SKU_Price; 
-          this.products[pi].qty = 1;
-          this.products[pi].sku = currentValue; 
-         }
-      }
-      
-    });
+           if(this.comparaattr(msku, mlocal))
+           {
+            this.products[pi].price = currentValue.SKU_Price; 
+            this.products[pi].qty = 1;
+            this.products[pi].sku = currentValue;
+           }
+        }
+        
+      });
+  }
   
   //create from local
 
@@ -311,6 +379,9 @@ addcart(p)
     });
   str = str+':'+this.products[p].qty;
   console.log(str);
+  let find = this.checkcart(p);
+  if(!find)
+  {
 
    let item = {
  'pid' : this.products[p].key,
@@ -324,7 +395,10 @@ addcart(p)
    // this.cart.push(item);
    
      let r = this.db.list('/cart').push(item);
-     this.products[p].price = 0;
+     console.log("firebase response");
+     console.log(r);
+
+      this.products[p].price = 0;
   this.products[p].qty = 0;
 
      let list = this.db.list('/products');
@@ -360,8 +434,9 @@ addcart(p)
           // mlocal[currentValue['name']] = currentValue['chosen'];
         }
       });
-// this.products[p].cart = 1;
 
+
+}
 }
 comparaattr(arr1,arr2)
 {
@@ -378,13 +453,13 @@ comparaattr(arr1,arr2)
     {
       //inner loop
       for(var obj2 in arr2)
-    {
-      if(obj1 == obj2 && arr1[obj1] != arr2[obj2] && r)
       {
-        r = false;
+        if(obj1 == obj2 && arr1[obj1] != arr2[obj2] && r)
+        {
+          r = false;
 
+        }
       }
-    }
         
     }
 
@@ -392,6 +467,8 @@ comparaattr(arr1,arr2)
 }
 
   ngOnInit() {
+
+
     if (this.LSRole === Role.Supplier) {
       this.router.navigate(['/supplierHome']);
     } else if (this.LSRole === Role.Courier) {
@@ -425,6 +502,7 @@ comparaattr(arr1,arr2)
         changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
       )
     ).subscribe(users => {
+      if(users[0] && users[0].credit)
       this.credit = users[0].credit;
 
     });
